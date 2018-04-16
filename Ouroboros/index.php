@@ -10,8 +10,6 @@
 	<?php include('php/pages/includes/nav-bar.php'); ?>
 	<div class="content">
 		<h1>Ouroboros</h1>
-		<h2>Hello</h2>
-		<p>this is a gaming company.</p>
 	</div>
 		<?php include('php/pages/includes/footer.php'); ?>
 </body>
