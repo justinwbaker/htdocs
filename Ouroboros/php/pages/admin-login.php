@@ -25,7 +25,7 @@
 		    </label>
 
 		    <p>Forgot <a href="">Password</a>?</p>
-			<p>Are you an <a href="admin-login.php">Admin</a>?</p>
+			<p>Are you <a href="login.php">not an Admin</a>?</p>
 		  </div>
 		</form>
 	</div>

@@ -43,14 +43,17 @@
 
 		$user_string = file_get_contents($user_path);
 		$user = json_decode($user_string);
-		if(!isset($user->games->$game)){
-			$user->games->$game = $game_json;
+
+		$user_name = $username . "-" . $UUID;
+
+		if(!isset($game_json->users->$user_name)){
+			$game_json->users->$user_name = $game_json->variables;
 		}else {
 			echo "user already has Game";
 		}
 
-		$fh = fopen($user_path, 'w') or die("can't open file");
-		fwrite($fh, json_encode($user, JSON_PRETTY_PRINT));
+		$fh = fopen($game_path, 'w') or die("can't open file");
+		fwrite($fh, json_encode($game_json, JSON_PRETTY_PRINT));
 		fclose($fh);
 	}
 

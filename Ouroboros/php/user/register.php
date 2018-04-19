@@ -119,7 +119,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     $_SESSION['username'] = $param_username;
                         $_SESSION['UUID'] = $UUID;
                         echo "success:" . $param_username . ":" . $UUID;
-                        header("location: ../../profile.php");
+                        header("location: ../pages/profile.php");
                 } else{
                     //echo $stmt->error . ":";
                     echo "Something went wrong. Please try again later.";

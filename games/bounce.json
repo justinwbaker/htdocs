@@ -1,0 +1,32 @@
+{
+    "genre": "arcade",
+    "scores": {
+        "highscore": {}
+    },
+    "variables": {
+        "total": 0,
+        "dailyScore": {
+            "total": 0
+        },
+        "weeklyScore": {
+            "total": 0
+        },
+        "allTimeScores": {
+            "total": 0
+        }
+    },
+    "users": {
+        "justbake-59f5c077-2b45-4de3-85a3-072cb3823f00": {
+            "total": 0,
+            "dailyScore": {
+                "total": 0
+            },
+            "weeklyScore": {
+                "total": 0
+            },
+            "allTimeScores": {
+                "total": 0
+            }
+        }
+    }
+}
