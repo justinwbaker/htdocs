@@ -1,4 +1,3 @@
-
 <?php $title = 'Ouroboros'; ?>
 <?php $metaTags = 'tag1 tag2'; ?>
 <?php $currentPage = 'Profile'; ?>
@@ -9,6 +8,7 @@
   <?php
     // Initialize the session
     // If session variable is not set it will redirect to login page
+    session_start();
     if(!isset($_SESSION['username']) || empty($_SESSION['username']) || !isset($_SESSION['UUID']) || empty($_SESSION['UUID'])){
       header("location: ../../index.php");
       exit;
@@ -33,9 +33,13 @@
 
       echo "<h2>Games:</h2><ol>";
       if(isset($_SESSION['game_name'])) {
-        echo "<li>" . $_SESSION['game_name'] . "</li>";
+        $games = explode(",", $_SESSION['game_name']);
+
+        for($i = 0; $i < sizeof($games); $i++) {
+          echo "<li>" . $games[$i] . "</li>";
+        }
         
-      echo "</ol>";
+        echo "</ol>";
       }else {
 
     $user = getUser($_SESSION['username'], $_SESSION['UUID']);
@@ -47,6 +51,33 @@
         }
       }
     ?>
+
+    <?php
+    if(isset($_SESSION['game_name'])):?>
+    <h2>Add Variable</h2>
+      <form action="../game/addVariableToGame.php" method = "get">
+        <div class="container">
+          <label for="variable"><b>variable</b></label>
+          <input type="text" placeholder="Enter Username" name="variable" required>
+
+          <label for="value"><b>value</b></label>
+          <input type="text" placeholder="Enter Password" name="value" required>
+
+          <label for="game"><b>Game</b></label><br>
+          <select name="game">
+            <?php 
+              $games = explode(",", $_SESSION['game_name']);
+
+              for($i = 0; $i < sizeof($games); $i++) {
+                echo "<option value=\"" . $games[$i] . "\">" . $games[$i] . "</option>";
+              }
+             ?>
+          </select>
+              
+          <button type="submit">Add</button>
+        </div>
+      </form>
+    <?php endif;?>
 
   </div>
     <?php include('includes/footer.php'); ?>

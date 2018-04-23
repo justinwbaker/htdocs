@@ -1,5 +1,4 @@
-<title><?php 
-        session_start();echo($title); ?></title>
+<title><?php echo($title); ?></title>
 <meta name="description" value="<?php echo($metaTags); ?>"><!-- note that this code is wrong -->
 <link rel="stylesheet" type="text/css" href=
 	<?php

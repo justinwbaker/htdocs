@@ -52,69 +52,176 @@
 			echo "user already has Game";
 		}
 
+		if(!isset($user_json->games->$game)) {
+			$user_json->games->$game = $game;
+		}else {
+			echo "user already has Game";
+		}
+
 		$fh = fopen($game_path, 'w') or die("can't open file");
 		fwrite($fh, json_encode($game_json, JSON_PRETTY_PRINT));
+		fclose($fh);
+
+		$fh = fopen($user_path, 'w') or die("can't open file");
+		fwrite($fh, json_encode($user_path, JSON_PRETTY_PRINT));
 		fclose($fh);
 	}
 
 	function getValue($username, $UUID, $game, $variable) {
-		$file_path = "../../../users/2018/" . $username . "-" . $UUID . ".json";
+		$game_path = "../../../games/". $game.".json";
 
 		$return = "null";
 
-		if(file_get_contents($file_path)) {
-			$user_string = file_get_contents($file_path);
-			$user_json = json_decode($user_string);
+		if(file_get_contents($game_path)) {
+			$game_string = file_get_contents($game_path);
+			$game_json = json_decode($game_string);
 
-			$return = $user_json->games->$game->$variable;
+			if(!isset($game_json->users->$username)) {
+				$return = "player has not played this game";
+			}else{
+				$return = $game_json->users->$username->$variable;
+			}
+
 		} else {
-			$return = "player not found";
+			$return = "game not found";
 		}
 		return $return;
 	}
 
-	function getTimeValue($username, $UUID, $game, $time, $variable) {
-		$file_path = "/users/2018/" . $username . "-" . $UUID . ".json";
-
-		$user_string = file_get_contents($file_path);
-		$user_json = json_decode($user_string);
-
-		echo "Hello";
-		return $user_json->games->$game->$time->$variable;
-	}
-
 	function setValue($username, $UUID, $game, $variable, $value) {
-		$file_path = "../../../users/2018/" . $username . "-" . $UUID . ".json";
+		$game_path = "../../../games/". $game.".json";
 
-		$user_string = file_get_contents($file_path);
-		$user_json = json_decode($user_string);
+		$return = "null";
 
-		if(isset($user_json->games->$game)){
-			$user_json->games->$game->$variable = $value;
-		}else {
-			echo "game does not exist";
+		if(file_get_contents($game_path)) {
+			$game_string = file_get_contents($game_path);
+			$game_json = json_decode($game_string);
+
+			if(!isset($game_json->users->$username)) {
+				$return = "player has not played this game";
+			}else{
+				$game_json->users->$username->$variable = $value;
+
+				$fh = fopen($game_path, 'w') or die("can't open file");
+				fwrite($fh, json_encode($game_json, JSON_PRETTY_PRINT));
+				fclose($fh);
+
+				$return = "variable added to player";
+
+				return $return;
+			}
+
+		} else {
+			$return = "game not found";
 		}
-
-		$fh = fopen($file_path, 'w') or die("can't open file");
-		fwrite($fh, json_encode($user_json, JSON_PRETTY_PRINT));
-		fclose($fh);
+		return $return;
 	}
 
-	function setTimeValue($username, $UUID, $game, $time, $variable, $value) {
-		$file_path = "../../../users/2018/" . $username . "-" . $UUID . ".json";
+	function addVariableToGame($game, $variable, $value) {
+		$game_path = "../../../games/". $game.".json";
 
-		$user_string = file_get_contents($file_path);
-		$user_json = json_decode($user_string);
+		$return = "null";
 
-		if(isset($user_json->games->$game)){
-			$user_json->games->$game->$time->$variable = $value;
-		}else {
-			echo "game does not exist";
+		if(file_get_contents($game_path)) {
+			$game_string = file_get_contents($game_path);
+			$game_json = json_decode($game_string);
+
+			$game_json->variables->$variable = $value;
+
+			//loop through all users
+			foreach ($game_json->users as $key) {
+			 	$key->$variable = $value;
+			}
+
+			$fh = fopen($game_path, 'w') or die("can't open file");
+			fwrite($fh, json_encode($game_json, JSON_PRETTY_PRINT));
+			fclose($fh);
+
+			$return = "variable added to player";
+
+		} else {
+			$return = "game not found";
+		}
+		return $return;
+
+	}
+
+	function setScore($username, $UUID, $game, $score, $value) {
+		$game_path = "../../../games/". $game.".json";
+
+		$return = "null";
+
+		if(file_get_contents($game_path)) {
+			$game_string = file_get_contents($game_path);
+			$game_json = json_decode($game_string, false);
+
+			$user = $username . "-" . $UUID;
+
+			if(isset($game_json->scores->$score)) {
+				$game_json->scores->$score->$user = $value;
+
+				$fh = fopen($game_path, 'w') or die("can't open file");
+				fwrite($fh, json_encode($game_json, JSON_PRETTY_PRINT));
+				fclose($fh);
+
+				$return = "variable added to scores";
+			}else {
+				$return = $score . " does not exist in scores";
+			}
+
+		} else {
+			$return = "game not found";
+		}
+		return $return;
+	}
+
+	function addScore($game, $score) {
+		$game_path = "../../../games/". $game.".json";
+
+		$return = "null";
+
+		if(file_get_contents($game_path)) {
+			$game_string = file_get_contents($game_path);
+			$game_json = json_decode($game_string, false);
+
+			if(isset($game_json->scores->$score)) {
+
+				$return = "variable already added to scores";
+			}else {
+				
+				$game_json->scores->$score = (object)[];
+
+				$fh = fopen($game_path, 'w') or die("can't open file");
+				fwrite($fh, json_encode($game_json, JSON_PRETTY_PRINT));
+				fclose($fh);
+
+				$return = "variable added to scores";
+			}
+
+		} else {
+			$return = "game not found";
+		}
+		return $return;
+	}
+
+	function getScores($username, $UUID, $game, $score) {
+		$game_path = "../../../games/". $game.".json";
+
+		$return = "null";
+
+		if(file_get_contents($game_path)) {
+			$game_string = file_get_contents($game_path);
+			$game_json = json_decode($game_string, false);
+
+			$user = $username . "-" . $UUID;
+
+				$return = $game_json->scores->$score->$user;
+
+		} else {
+			$return = "game not found";
 		}
 
-		$fh = fopen($file_path, 'w') or die("can't open file");
-		fwrite($fh, json_encode($user_json, JSON_PRETTY_PRINT));
-		fclose($fh);
+		return $return;
 	}
 
 ?>

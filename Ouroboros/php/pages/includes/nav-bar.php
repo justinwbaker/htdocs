@@ -13,7 +13,7 @@
             // …
         );
         echo "<br>";
-        if(isset($_SESSION['admin']) == "admin") {
+        if(isset($_SESSION['game_name'])) {
             $urls["Games"] = $PathToPHP . "pages/games-admin.php";
         }
 
