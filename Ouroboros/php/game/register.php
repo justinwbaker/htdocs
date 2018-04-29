@@ -1,6 +1,6 @@
 <?php
 // Include config file
-require_once 'json_manager.php';
+require_once '../json_manager.php';
  
 // Define variables and initialize with empty values
 $username = $password = $confirm_password = $name = $lastname = $gender = "";

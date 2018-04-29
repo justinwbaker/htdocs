@@ -97,10 +97,12 @@
 			$game_string = file_get_contents($game_path);
 			$game_json = json_decode($game_string);
 
-			if(!isset($game_json->users->$username)) {
+			$user = $username . "-" . $UUID;
+
+			if(!isset($game_json->users->$user)) {
 				$return = "player has not played this game";
 			}else{
-				$game_json->users->$username->$variable = $value;
+				$game_json->users->$user->$variable = $value;
 
 				$fh = fopen($game_path, 'w') or die("can't open file");
 				fwrite($fh, json_encode($game_json, JSON_PRETTY_PRINT));
@@ -204,7 +206,7 @@
 		return $return;
 	}
 
-	function getScores($username, $UUID, $game, $score) {
+	function addUserScore($username, $UUID, $game, $score, $value) {
 		$game_path = "../../../games/". $game.".json";
 
 		$return = "null";
@@ -215,11 +217,61 @@
 
 			$user = $username . "-" . $UUID;
 
-				$return = $game_json->scores->$score->$user;
+			$game_json->scores->$score->$user = $value;
+
+			$fh = fopen($game_path, 'w') or die("can't open file");
+			fwrite($fh, json_encode($game_json, JSON_PRETTY_PRINT));
+			fclose($fh);
+
+			$return = "variable added to scores";
 
 		} else {
 			$return = "game not found";
 		}
+		return $return;
+	}
+
+	function getScore($username, $UUID, $game, $score) {
+		$game_path = "../../../games/". $game.".json";
+
+		$return = "null";
+
+		if(file_get_contents($game_path)) {
+			$game_string = file_get_contents($game_path);
+			$game_json = json_decode($game_string, false);
+
+			$user = $username . "-" . $UUID;
+
+			$return = $game_json->scores->$score->$user;
+		} else {
+			$return = "game not found";
+		}
+
+		return $return;
+	}
+
+	function getScores($game, $score) {
+		$game_path = "../../../games/". $game.".json";
+
+		$return = "null";
+
+		if(file_get_contents($game_path)) {
+			$game_string = file_get_contents($game_path);
+			$game_json = json_decode($game_string, false);
+
+			$return = "";
+
+			$fruitArrayObject = (Array) ($game_json->scores->$score);
+			arsort($fruitArrayObject);
+
+			foreach ($fruitArrayObject as $key => $val) {
+			    $return .= "$key:$val\n";
+			}
+
+		} else {
+			$return = "game not found";
+		}
+
 
 		return $return;
 	}
